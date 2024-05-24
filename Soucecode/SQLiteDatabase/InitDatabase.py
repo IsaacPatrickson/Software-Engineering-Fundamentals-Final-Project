@@ -58,7 +58,7 @@ def hardcodeValues(cursor, populated):
         cursor.execute("""INSERT INTO clients (clientName, contractStatus, contractStartDate, contractEndDate, projectWork, hqLongitude, hqLatitude, estimatedTotalRevenue) 
                     VALUES ('SouthernWater', FALSE, '12-02-2023', '15-12-2023', TRUE, 50.82407, -0.42637, 750000.00)""")
 
-def tempCheckTableContents(cursor):
+def checkTableContents(cursor):
     cursor.execute("SELECT * FROM users")
     results = cursor.fetchall()
     print(results)
