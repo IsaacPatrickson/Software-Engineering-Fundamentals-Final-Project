@@ -3,9 +3,9 @@ import re
 class User():
     
     def __init__(self) -> None:
-        self.userName        = ""
-        self.permissionLevel = ""
-        self.loginStatus     = False
+        self.userName           = ""
+        self.permissionLevel    = ""
+        self.loginStatus        = False
         
     def validateUserName(self, inputName):
         # Creating a pattern using the Regular Expressions(RE) library

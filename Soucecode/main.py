@@ -2,7 +2,9 @@ import sqlite3
 import time
 import pandas as pd
 from SQLiteDatabase.InitDatabase import *
+from SQLQueries import *
 from userClass import *
+from clientClass import *
 
 # Connect to a (new) database
 try:
@@ -41,7 +43,7 @@ def login_menu():
                     if login.isUserNameInTable(cursor, inputName):
                         login.setExistingUserName(inputName)
                         login.setLoginStatus(True)
-                        print(f"Welcome, {inputName}")
+                        print(f"Welcome to the Client Information Management System, {inputName}")
                         userNameInput = True
                     else:
                         print("The entered username is not in our database")
@@ -54,27 +56,22 @@ def login_menu():
                         time.sleep(3)
             
             while login.getLoginStatus() == True:
-                print(pd.read_sql_query("SELECT * FROM users", connection))
-                # # Fetch the table data
-                # cursor.execute("SELECT * FROM users")
-                # rows = cursor.fetchall()
-
-                # # Fetch the column names
-                # column_names = [description[0] for description in cursor.description]
-
-                # # Print the column names
-                # print(" | ".join(column_names))
-                # print("-" * (len(column_names) * 10))
-
-                # # Print each row
-                # for row in rows:
-                #     print(" | ".join(str(item) for item in row))
-                
-                break
-                # login.setExistingPermissionLevel(cursor, inputName)
-                # if login.getPermissionLevel() == 9:
-                # elif login.getPermissionLevel() == 1:
-            
+                print()
+                print(pd.read_sql_query("SELECT * FROM clients", connection))
+                print()
+                login.setExistingPermissionLevel(cursor, inputName)
+                if login.getPermissionLevel() == 9:
+                    print("Admin Menu")
+                    print()
+                    print("(1) Amend client information")
+                    print("(2) Amend client information")
+                    print("(3) Amend client information")
+                    print("(4) Amend client information")
+                    print("(0) Amend client information")
+                    print()
+                elif login.getPermissionLevel() == 1:
+                    print("Employee Menu")
+                    print()
             
             
             # if login.setExistingUserName(login.isUserNameInTable(cursor, inputName), inputName):
