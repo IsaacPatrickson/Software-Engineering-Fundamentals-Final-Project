@@ -20,16 +20,15 @@ hardcodeValues(cursor, isTablePopulated(cursor, "users") and isTablePopulated(cu
 
 # Displays the login menu   
 def login_menu():
-    # I have used time.sleep to create an animation for the title's appearancee.
-    # This style choice mimmicks that of an old computer and gives my program more character
-    print()
-    print(" 1. Login")
-    print(" 0. Quit")
-    print()
-
     # This while loop will validate the user's choice of action at the Login Menu
     loginMenuValid = False
     while loginMenuValid == False:
+        print()
+        print("MAIN MENU")
+        print()
+        print(" 1. Login")
+        print(" 0. Quit")
+        print()
         choice = input("Select 1 or 0: ")
         
         if choice == "1":
@@ -40,9 +39,10 @@ def login_menu():
             while userNameInput == False:
                 inputName = input("(Enter '0' to Abort) Enter your username: ")
                 if login.validateUserName(inputName):
-                    if login.isUserNameInTable(cursor, inputName):
+                    if login.isUserNameInTable(selectAttribute(cursor, "userName", "users", "userName", inputName)):
                         login.setExistingUserName(inputName)
                         login.setLoginStatus(True)
+                        print()
                         print(f"Welcome to the Client Information Management System, {inputName}")
                         userNameInput = True
                     else:
@@ -56,22 +56,55 @@ def login_menu():
                         time.sleep(3)
             
             while login.getLoginStatus() == True:
+                permissionLevel = []
+                clientsTable = getTableWithPandas(pd, connection, "clients")
+                
                 print()
-                print(pd.read_sql_query("SELECT * FROM clients", connection))
+                print(clientsTable)
                 print()
-                login.setExistingPermissionLevel(cursor, inputName)
-                if login.getPermissionLevel() == 9:
-                    print("Admin Menu")
+                values = selectAttribute(cursor, "permissionLevel", "users", "userName", inputName)
+                for value in values:
+                    login.setExistingPermissionLevel(value)
+                permissionLevel = login.getPermissionLevel()
+                if permissionLevel == 9:
+                    choice = []
+                    print("ADMIN MENU")
                     print()
                     print("(1) Amend client information")
-                    print("(2) Amend client information")
-                    print("(3) Amend client information")
-                    print("(4) Amend client information")
-                    print("(0) Amend client information")
+                    print("(2) Add a client")
+                    print("(3) Remove a client")
+                    print("(4) Search for clients")
+                    print("(0) Log out")
                     print()
-                elif login.getPermissionLevel() == 1:
-                    print("Employee Menu")
+                    choice = int(input("Enter (0-4) to select an option: "))
+                    if choice == 1:
+                        print("Amend")
+                    elif choice == 2:
+                        print("Add")   
+                    elif choice == 3:
+                        print("Remove")   
+                    elif choice == 4:
+                        print("Search")
+                    elif choice == 0:
+                        print()
+                        login.setLoginStatus(False) 
+                        
+                elif permissionLevel == 1:
+                    choice = []
+                    print("EMPLOYEE MENU")
                     print()
+                    print("(1) Search for clients")
+                    print("(0) Log out")
+                    print()
+                    choice = int(input("Enter (0-1) to select an option: "))
+                    if choice == 1:
+                        print("Search")
+                    elif choice == 0:
+                        print()
+                        login.setLoginStatus(False) 
+            
+            loginMenuValid = False            
+                        
             
             
             # if login.setExistingUserName(login.isUserNameInTable(cursor, inputName), inputName):
@@ -146,7 +179,6 @@ def login_menu():
     
     
 login_menu()
-    
     
     
 # Committing all changes to the database

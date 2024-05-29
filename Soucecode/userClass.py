@@ -4,7 +4,7 @@ class User():
     
     def __init__(self) -> None:
         self.userName           = ""
-        self.permissionLevel    = ""
+        self.permissionLevel    = []
         self.loginStatus        = False
         
     def validateUserName(self, inputName):
@@ -18,21 +18,21 @@ class User():
         else:
             return False
         
-    def isUserNameInTable(self, cursor, inputName):
-        cursor.execute("SELECT userName FROM users WHERE userName = ?", (inputName,))
-        result = cursor.fetchone()
+    def isUserNameInTable(self, result):
+        # cursor.execute("SELECT userName FROM users WHERE userName = ?", (inputName,))
+        # result = cursor.fetchone()
         if result:
             return True
         else:
             return False
             
-    def setExistingPermissionLevel(self, cursor, inputName):
-        cursor.execute("SELECT permissionLevel FROM users WHERE userName = ?", (inputName,))
-        result = cursor.fetchone()
-        self.permissionLevel = result     
-            
     def setExistingUserName(self, inputName):
         self.userName = inputName
+        
+    def setExistingPermissionLevel(self, result):
+        # cursor.execute("SELECT permissionLevel FROM users WHERE userName = ?", (inputName,))
+        # result = cursor.fetchone()
+        self.permissionLevel = result     
         
     def setLoginStatus(self, loginStatus):
         self.loginStatus = loginStatus
