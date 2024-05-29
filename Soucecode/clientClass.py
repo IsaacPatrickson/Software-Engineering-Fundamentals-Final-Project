@@ -10,4 +10,6 @@ class Client():
         self.hqLongitude            = []
         self.hqLatitude             = []
         self.estimatedTotalRevenue  = []
-        
+     
+     
+     

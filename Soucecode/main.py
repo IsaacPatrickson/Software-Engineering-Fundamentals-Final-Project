@@ -42,7 +42,6 @@ def login_menu():
                     if login.isUserNameInTable(selectAttribute(cursor, "userName", "users", "userName", inputName)):
                         login.setExistingUserName(inputName)
                         login.setLoginStatus(True)
-                        print()
                         print(f"Welcome to the Client Information Management System, {inputName}")
                         userNameInput = True
                     else:
@@ -60,62 +59,112 @@ def login_menu():
                 clientsTable = getTableWithPandas(pd, connection, "clients")
                 
                 print()
-                print(clientsTable)
                 print()
-                values = selectAttribute(cursor, "permissionLevel", "users", "userName", inputName)
-                for value in values:
-                    login.setExistingPermissionLevel(value)
+                print(clientsTable)
+                permissionValues = selectAttribute(cursor, "permissionLevel", "users", "userName", inputName)
+                for permissionValue in permissionValues:
+                    login.setExistingPermissionLevel(permissionValue)
+                
+
                 permissionLevel = login.getPermissionLevel()
                 if permissionLevel == 9:
                     choice = []
+                    print()
+                    print()
                     print("ADMIN MENU")
                     print()
                     print("(1) Amend client information")
                     print("(2) Add a client")
-                    print("(3) Remove a client")
+                    print("(3) Delete a client")
                     print("(4) Search for clients")
                     print("(0) Log out")
                     print()
                     validChoice = False
                     while validChoice == False:
-                        try:
-                            choice = int(input("Enter (0-4) to select an option: "))
-                            if choice == 1:
-                                validChoice = True
-                                print("Amend")
-                            elif choice == 2:
-                                validChoice = True
-                                print("Add")
-                            elif choice == 3:
-                                validChoice = True
-                                print("Remove")  
-                            elif choice == 4:
-                                validChoice = True
-                                print("Search")
-                            elif choice == 0:
-                                validChoice = True
-                                print()
-                                login.setLoginStatus(False)
-                            else:
-                                print("Input must be an integer between (0-4)")
-                        except:
+                        choice = int(input("Enter (0-4) to select an option: "))
+                        if choice == "1":
+                            validChoice = True
+                            print("Amend")
+                        elif choice == "2":
+                            validChoice = True
+                            print("Add")
+                        elif choice == "3":
+                            validChoice = True
+                            print("Remove")  
+                        elif choice == "4":
+                            validChoice = True
+                            print("Search")
+                        elif choice == "0":
+                            validChoice = True
+                            print()
+                            login.setLoginStatus(False)
+                        else:
                             print("Input must be an integer between (0-4)")
+                            time.sleep(3)
+                        
                         
                 elif permissionLevel == 1:
-                    choice = []
-                    print("EMPLOYEE MENU")
-                    print()
-                    print("(1) Search for clients")
-                    print("(0) Log out")
-                    print()
-                    choice = int(input("Enter (0-1) to select an option: "))
-                    if choice == 1:
-                        print("Search")
-                    elif choice == 0:
+                    
+                    validChoice = False
+                    while validChoice == False:
+                        choice = []
                         print()
-                        login.setLoginStatus(False) 
+                        print()
+                        print("EMPLOYEE MENU")
+                        print()
+                        print("(1) Search for clients")
+                        print("(0) Log out")
+                        print()
+                        choice = input("Enter (0-1) to select an option: ")
+                        
+                        
+                        if choice == "1":
+                            validChoice = True
+                            
+                            searchOptionValid = False
+                            while searchOptionValid == False:
+                                print()
+                                print()
+                                print("SEARCH FOR CLIENTS")
+                                print()
+                                print("To abort enter '0'")
+                                attributeToSearchBy = input("Enter the attribute you want to search by: ")
+                                if attributeToSearchBy == "0":
+                                    searchOptionValid = True
+                                elif validateAttributeToSeachBy(cursor, attributeToSearchBy) == True:
+                                    valueToSearchFor = input("Enter the value this attribute needs to have: ")
+                                    searchResults = str(selectAttributesWithPandas(pd, connection, "*", "clients", attributeToSearchBy, valueToSearchFor))
+                                    if "Empty DataFrame" not in searchResults:
+                                        print()
+                                        print(searchResults)
+                                    else:
+                                        print()
+                                        print("No results match that search")
+                                elif validateAttributeToSeachBy(cursor, attributeToSearchBy) == False:
+                                    print("The attribute you have selected does not exist as a column in the clients table")
+                                else:
+                                    print("Invalid attribute name! Enter '0' to abort")
+                                    
+                                    
+                            # print(validSearchAttribute)
+                            # valueToSearchFor = input("Enter the value this attribute needs to have: ")
+                            # # print()                    
+                            # searchResults = selectAttributesWithPandas(pd, connection, "*", "clients", attributeToSearchBy, valueToSearchFor)
+                            # print(searchResults)
+                            
+                            
+                            
+                        elif choice == "0":
+                            validChoice = True
+                            print()
+                            login.setLoginStatus(False)
+                        else:
+                            print("Input must be an integer between (0-1)")
+                            time.sleep(3)
+                    
+            loginMenuValid = False
             
-            loginMenuValid = False            
+                        
                         
             
             
