@@ -76,18 +76,30 @@ def login_menu():
                     print("(4) Search for clients")
                     print("(0) Log out")
                     print()
-                    choice = int(input("Enter (0-4) to select an option: "))
-                    if choice == 1:
-                        print("Amend")
-                    elif choice == 2:
-                        print("Add")   
-                    elif choice == 3:
-                        print("Remove")   
-                    elif choice == 4:
-                        print("Search")
-                    elif choice == 0:
-                        print()
-                        login.setLoginStatus(False) 
+                    validChoice = False
+                    while validChoice == False:
+                        try:
+                            choice = int(input("Enter (0-4) to select an option: "))
+                            if choice == 1:
+                                validChoice = True
+                                print("Amend")
+                            elif choice == 2:
+                                validChoice = True
+                                print("Add")
+                            elif choice == 3:
+                                validChoice = True
+                                print("Remove")  
+                            elif choice == 4:
+                                validChoice = True
+                                print("Search")
+                            elif choice == 0:
+                                validChoice = True
+                                print()
+                                login.setLoginStatus(False)
+                            else:
+                                print("Input must be an integer between (0-4)")
+                        except:
+                            print("Input must be an integer between (0-4)")
                         
                 elif permissionLevel == 1:
                     choice = []
@@ -172,7 +184,7 @@ def login_menu():
             exit()
             
         else:
-            print("Error! Input must be an integer preceding one of the options above")   
+            print("Error! Input must be an integer (0-1)")   
     
     
     
