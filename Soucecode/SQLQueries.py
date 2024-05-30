@@ -13,12 +13,16 @@ def selectAttributesWithPandas(pd, connection, selector, table, column, value):
     results = pd.read_sql_query(query, connection, params=(value,))
     return results
 
-def attributeNameMatchClientColumnName(cursor, attributeName):
+def getColumnNames(cursor):
     cursor.execute("""SELECT clientID, clientName, contractStatus, contractStartDate,
                 contractEndDate, projectWork, hqLongitude, hqLatitude, estimatedTotalRevenue 
                 FROM clients""")
     # Fetch the column names
     columnNames = [description[0] for description in cursor.description]
+    return columnNames
+
+def attributeNameMatchClientColumnName(cursor, attributeName):
+    columnNames = getColumnNames(cursor)
     for columnName in columnNames:
         if attributeName == columnName:
             return True
@@ -60,10 +64,8 @@ def getColumnDataType(cursor, tableName, columnName):
             typeName = "".join(typeName)
             return typeName
         
-    return None     
-        
-        
-# def selectAllCases(cursor, selector, table, condition, value):
-#     cursor.execute("SELECT ? FROM ? WHERE ? = ?", (selector, table, condition, value,))
-#     result = cursor.fetchall()
-#     return result
+    return None    
+
+def insertInto(cursor, tableName, columns, values):
+    query = f"INSERT INTO {tableName} ({', '.join(columns)}) VALUES ({', '.join(['?' for _ in values])})"
+    cursor.execute(query, values)

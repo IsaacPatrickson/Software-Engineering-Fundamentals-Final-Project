@@ -3,9 +3,9 @@ import re
 class User():
     
     def __init__(self) -> None:
-        self.userName           = ""
-        self.permissionLevel    = []
-        self.loginStatus        = False
+        self._userName           = ""
+        self._permissionLevel    = []
+        self._loginStatus        = False
         
     def isUserNameInTable(self, result):
         # cursor.execute("SELECT userName FROM users WHERE userName = ?", (inputName,))
@@ -16,24 +16,24 @@ class User():
             return False
             
     def setExistingUserName(self, inputName):
-        self.userName = inputName
+        self._userName = inputName
         
     def setExistingPermissionLevel(self, result):
         # cursor.execute("SELECT permissionLevel FROM users WHERE userName = ?", (inputName,))
         # result = cursor.fetchone()
-        self.permissionLevel = result     
+        self._permissionLevel = result     
         
     def setLoginStatus(self, loginStatus):
-        self.loginStatus = loginStatus
+        self._loginStatus = loginStatus
         
     def getUserName(self):
-        return self.userName
+        return self._userName
     
     def getPermissionLevel(self):
-        return self.permissionLevel
+        return self._permissionLevel
     
     def getLoginStatus(self):
-        return self.loginStatus
+        return self._loginStatus
     
     
 def validateUserName(inputName):

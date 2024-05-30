@@ -2,8 +2,8 @@ def createUsersTable(cursor):
     # Create users table
     initUsersTable = """CREATE TABLE IF NOT EXISTS users(
         userID INTEGER PRIMARY KEY AUTOINCREMENT,
-        userName TEXT(60) NOT NULL,
-        permissionLevel INT(1) NOT NULL
+        userName TEXT NOT NULL,
+        permissionLevel INT NOT NULL
         )"""
     # Executing the command that creates the users table
     cursor.execute(initUsersTable)
@@ -12,19 +12,19 @@ def createClientsTable(cursor):
     # Create clients table
     initClientsTable = """CREATE TABLE IF NOT EXISTS clients(
         clientID INTEGER PRIMARY KEY AUTOINCREMENT,
-        clientName TEXT(60) NOT NULL,
+        clientName TEXT NOT NULL,
         contractStatus BOOLEAN NOT NULL,
-        contractStartDate TEXT(10),
-        contractEndDate TEXT(10),
+        contractStartDate TEXT,
+        contractEndDate TEXT,
         projectWork BOOLEAN NOT NULL,
-        hqLongitude REAL(13),
-        hqLatitude REAL(13),
-        estimatedTotalRevenue REAL(13)
+        hqLongitude REAL,
+        hqLatitude REAL,
+        estimatedTotalRevenue REAL
         )"""
     # Executing the command that creates the clients table
     cursor.execute(initClientsTable)
 
-def isTablePopulated(cursor, tableName):
+def isTablePopulated(sqlite3, cursor, tableName):
     # SQL query to count the number of rows in the table
     query = f"SELECT COUNT(*) FROM {tableName}"
     

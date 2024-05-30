@@ -1,6 +1,9 @@
 import sqlite3
 import time
 import pandas as pd
+from itertools import zip_longest
+import inspect
+import ast
 from SQLiteDatabase.InitDatabase import *
 from SQLQueries import *
 from userClass import *
@@ -15,7 +18,8 @@ except sqlite3.OperationalError as e:
     
 createUsersTable(cursor)
 createClientsTable(cursor)
-hardcodeValues(cursor, isTablePopulated(cursor, "users") and isTablePopulated(cursor, "clients"))
+hardcodeValues(cursor, isTablePopulated(sqlite3, cursor, "users") 
+               and isTablePopulated(sqlite3, cursor, "clients"))
 # checkTableContents(cursor)
 
 # Displays the login menu   
@@ -85,10 +89,12 @@ def login_menu():
                         choice = input("Enter (0-4) to select an option: ")
                         if choice == "1":
                             validChoice = True
-                            ammendClients()
+                            amendClientInformation()
                         elif choice == "2":
                             validChoice = True
-                            print("Add")
+                            addClient()
+                            
+                            
                         elif choice == "3":
                             validChoice = True
                             print("Remove")  
@@ -175,7 +181,7 @@ def searchClients():
         else:
             print(f"{attributeToSearchBy} is an invalid attribute name! Enter '0' to abort")        
     
-def ammendClients():
+def amendClientInformation():
     ammendOptionValid = False
     while ammendOptionValid == False:
         print()
@@ -183,7 +189,6 @@ def ammendClients():
         print("AMEND CLIENT INFORMATION")
         print()
         print("To abort enter '0'")
-               
         iDofClientToAmend = input("Enter the clientID of the details you want to amend: ")
         if iDofClientToAmend == "0":
             ammendOptionValid = True
@@ -210,12 +215,75 @@ def ammendClients():
         else:
             print(f"{iDofClientToAmend} is an invalid clientID! A clientID must be an integer")
        
-       
+def addClient():
+    addProcessComplete = False
+    while addProcessComplete == False:
+        print()
+        print()
+        print("ADD CLIENT INFORMATION")
+        print()
+        print("To abort enter '000'")
+        clientToAdd = Client()
+        columnNames = getColumnNames(cursor)
+        for columnName in columnNames:
+            if columnName == "clientID":
+                columnNames.remove(columnName)
+            else:
+                pass
+        questions = [
+                    "Client name: ", 
+                    "Contract status ('1'=Active/'0'=Inactive): ",
+                    "Contract start date: ",
+                    "Contract end date: ",
+                    "Contract includes project work ('1'=Yes/'0'=No): ",
+                    "Longitude of client HQ: ",
+                    "Latitude of client HQ: ",
+                    "Estimated total revenue: "
+                    ]
+        methods = getMethodNamesInOrder(Client)
+        mergedColNamesQuestionsMethods = [[a, b, c] for a, b, c in zip_longest(columnNames, questions, methods)]
+        abort = False
+        for ColQuestionMethod in mergedColNamesQuestionsMethods:
+            answerValid = False
+            while answerValid == False:
+                answer = input(ColQuestionMethod[1]) 
+                if answer == "000":
+                    answerValid = True
+                    abort = True
+                    print()
+                    print("Adding a new client aborted")
+                elif len(answer) > 60:
+                    print("The length of each answer must be below 60 characters")
+                elif compareDatatypes(cursor, answer, "clients", ColQuestionMethod[0]):
+                    answerValid = True
+                    method = getattr(clientToAdd, ColQuestionMethod[2])
+                    method(answer)
+                else:
+                    print("The datatype of the answer you entered does not match the field")
+            if abort:
+                addProcessComplete = True
+                break
+        
+        if abort == False:    
+            answerValues = [clientToAdd.getClientName(),
+                            clientToAdd.getContractStatus(),
+                            clientToAdd.getContractStartDate(),
+                            clientToAdd.getContractEndDate(),
+                            clientToAdd.getProjectBasedWork(),
+                            clientToAdd.getHqLongitude(),
+                            clientToAdd.getHqLatitude(),
+                            clientToAdd.getEstimatedTotalRevenue()]
+            insertInto(cursor, "clients", columnNames, answerValues)
+            addProcessComplete = True
+              
+        
+
+    
+            
        
        
 def compareDatatypes(cursor, inputValue, tableName, columnName):
     columnDatatype = getColumnDataType(cursor, tableName, columnName)
-    
     datatypeMap = {
         "INTEGER": int,
         "BOOLEAN": int,
@@ -228,14 +296,13 @@ def compareDatatypes(cursor, inputValue, tableName, columnName):
     convertedInputValue = detectAndConvertInput(inputValue)
     
     inputDatatype = type(convertedInputValue)
-    
     if inputDatatype == datatypeMap.get(columnDatatype.upper()):
         return True
     else:
         return False               
                    
 def detectAndConvertInput(inputValue):
-    try:
+    try:            
         # Tries to convert the input to an integer
         convertedValue = int(inputValue)
         return convertedValue
@@ -248,7 +315,14 @@ def detectAndConvertInput(inputValue):
             # If both conversions fail, return the original input (assumed to be a string)
             return inputValue            
     
-    
+def getMethodNamesInOrder(className):
+    source = inspect.getsource(className)  
+    tree = ast.parse(source)
+    methods = [node.name for node in tree.body[0].body 
+               if isinstance(node, ast.FunctionDef) 
+               and not node.name.startswith('__')
+               and not node.name.startswith('get')]
+    return methods
     
     
     
