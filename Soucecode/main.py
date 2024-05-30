@@ -163,7 +163,9 @@ def amendClientInformation():
             elif attributeNameMatchClientColumnName(cursor, fieldToModify):
                 replacementValue = input("Input the replacement value: ")
                 if compareDatatypes(cursor, replacementValue, "clients", fieldToModify):
-                    # if fieldToModify ==
+                    if getColumnDataType(cursor, "clients", fieldToModify) == "BOOLEAN":
+                        while replacementValue != "1" and replacementValue != "0":
+                            replacementValue = input("Replacement value for for BOOLEAN fileds must be '1' or '0': ")
                     replaceAttribute(cursor, "clients", fieldToModify, replacementValue, "clientID", iDofClientToAmend)
                     print()
                     print("Attribute amended successfully")
