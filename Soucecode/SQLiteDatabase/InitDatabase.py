@@ -1,15 +1,15 @@
 def createUsersTable(cursor):
-    # Create users table
+    # Create 'users' table
     initUsersTable = """CREATE TABLE IF NOT EXISTS users(
         userID INTEGER PRIMARY KEY AUTOINCREMENT,
         userName TEXT NOT NULL,
         permissionLevel INT NOT NULL
         )"""
-    # Executing the command that creates the users table
+    # Executing the command that creates the 'users' table
     cursor.execute(initUsersTable)
 
 def createClientsTable(cursor):
-    # Create clients table
+    # Create 'clients' table
     initClientsTable = """CREATE TABLE IF NOT EXISTS clients(
         clientID INTEGER PRIMARY KEY AUTOINCREMENT,
         clientName TEXT NOT NULL,
@@ -21,7 +21,7 @@ def createClientsTable(cursor):
         hqLatitude REAL,
         estimatedTotalRevenue REAL
         )"""
-    # Executing the command that creates the clients table
+    # Executing the command that creates the 'clients' table
     cursor.execute(initClientsTable)
 
 def isTablePopulated(sqlite3, cursor, tableName):
@@ -49,8 +49,8 @@ def hardcodeValues(cursor, populated):
     if populated:
         pass
     else:
-        # Add to users
-        # cursor.execute("INSERT INTO users VALUES (1, 'Isaac Patrickson', 9)")
+        # Add to 'users'
+        # Defining 'users' columns and data to insert
         columns = ["userName", "permissionLevel"]
         rows = [
             ('Isaac Patrickson', 9),
@@ -64,6 +64,10 @@ def hardcodeValues(cursor, populated):
             ('Jasper Doe', 8),
             ('Jessie Doe', 1)
         ]
+        # Add each record to the table one at a time
+        # If the hardcode data is corrupted
+        # the insert process will skip the data that causes an error
+        # and continue on to the next record
         for row in rows:
             query = f"INSERT INTO users ({', '.join(columns)}) VALUES ({', '.join(['?' for _ in columns])})"
             try:
@@ -72,7 +76,8 @@ def hardcodeValues(cursor, populated):
                 print("Hardcoded values corrupted, corrupted records may be skipped")
                
                
-        # Add to clients
+        # Add to 'clients'
+        # Defining 'clients' columns and data to insert
         columns = ["clientName", "contractStatus", "contractStartDate", "contractEndDate", "projectWork", "hqLongitude", "hqLatitude", "estimatedTotalRevenue"]
         rows = [
             ('VetPartners', '1', '25-03-2024', '', '1', 53.98797, -1.10369, 650000.00),
@@ -86,19 +91,13 @@ def hardcodeValues(cursor, populated):
             ('Serios Group', '1', '27-06-2024', '', '1', -28.2190, 33.1939, 75000.00),
             ('Zentia', '1', '19-04-2023', '', '1', 97.0081, 3.3163, 500000.00)
         ]
+        # Add each record to the table one at a time
+        # If the hardcode data is corrupted
+        # the insert process will skip the data that causes an error
+        # and continue on to the next record
         for row in rows:
             query = f"INSERT INTO clients ({', '.join(columns)}) VALUES ({", ".join(['?' for _ in columns])})"
             try:
                 cursor.execute(query, row)
             except:
                 print("Hardcoded values corrupted, corrupted records may be skipped")
-                    
-                    
-        
-def checkTableContents(cursor):
-    cursor.execute("SELECT * FROM users")
-    results = cursor.fetchall()
-    print(results)
-    cursor.execute("SELECT * FROM clients")
-    results = cursor.fetchall()
-    print(results)

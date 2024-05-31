@@ -1,6 +1,7 @@
 class Client():
     
     def __init__(self) -> None:
+        # Initialize a new 'Client' instance with default values
         self._clientId               = []
         self._clientName             = []
         self._contractStatus         = []
