@@ -10,24 +10,26 @@ from userClass import *
 from clientClass import *
 
 # Connect to a (new) database
-try:
-    connection = sqlite3.connect("SQLiteDatabase/mediaworksUsersAndClients.db")
-    cursor = connection.cursor()
-except sqlite3.OperationalError as e:
-    print(f"An error occurred: {e}")
-
-# Functions that create the 'users' and the 'clients' table
-createUsersTable(cursor)
-createClientsTable(cursor)
-
-# Check if the tables are already populated and hardcode values accordingly
-hardcodeValues(cursor, isTablePopulated(sqlite3, cursor, "users") 
-               and isTablePopulated(sqlite3, cursor, "clients"))
+def conntectToDatabase():
+    try:
+        connection = sqlite3.connect("SQLiteDatabase/mediaworksUsersAndClients.db")
+        return connection
+    except sqlite3.OperationalError as e:
+        print(f"An error occurred: {e}")
 
 # Login menu is the main branch of the program
 # The login process is executed 
 # and depending on the user permissions different options are presented
 def login_menu():
+    connection = conntectToDatabase()
+    cursor = connection.cursor()
+    # Functions that create the 'users' and the 'clients' table
+    createUsersTable(cursor)
+    createClientsTable(cursor)
+
+    # Check if the tables are already populated and hardcode values accordingly
+    hardcodeValues(cursor, isTablePopulated(sqlite3, cursor, "users") 
+                and isTablePopulated(sqlite3, cursor, "clients"))
     # This while loop will help validate the user's choice of action at the Login Menu
     # 'loginMenuValid' is True when the user has successfully entered a valid choice
     # and the loop ends
@@ -108,16 +110,16 @@ def login_menu():
                         # corresponding to the action the user wants to execute
                         if choice == "1":
                             validChoice = True
-                            amendClientInformation()
+                            amendClientInformation(cursor)
                         elif choice == "2":
                             validChoice = True
-                            addClient()
+                            addClient(cursor)
                         elif choice == "3":
                             validChoice = True
-                            removeClient()
+                            removeClient(cursor)
                         elif choice == "4":
                             validChoice = True
-                            searchClients()
+                            searchClients(connection, cursor)
                         elif choice == "0":
                             validChoice = True
                             print()
@@ -143,7 +145,7 @@ def login_menu():
                         choice = input("Enter (0-1) to select an option: ")
                         if choice == "1":
                             validChoice = True
-                            searchClients()                                                
+                            searchClients(connection, cursor)                                                
                         elif choice == "0":
                             validChoice = True
                             print()
@@ -185,7 +187,7 @@ def login_menu():
     exit()
         
             
-def amendClientInformation():
+def amendClientInformation(cursor):
     # A while loop that validates the user input on the amend menu
     ammendOptionValid = False
     while ammendOptionValid == False:
@@ -228,7 +230,7 @@ def amendClientInformation():
         else:
             print(f"An error occurred: {iDofClientToAmend} is an invalid clientID! A clientID must be an integer")
        
-def addClient():
+def addClient(cursor):
     # A while loop that validates the user input on the add menu
     addProcessComplete = False
     while addProcessComplete == False:
@@ -312,7 +314,7 @@ def addClient():
             print("Client successfully added to table")
             addProcessComplete = True
        
-def removeClient():
+def removeClient(cursor):
     # A while loop that validates the user input on the remove menu
     removeOptionValid = False
     while removeOptionValid == False:
@@ -351,7 +353,7 @@ def removeClient():
         else:
             print(f"An error occurred: {iDofClientToRemove} is an invalid clientID! A clientID must be an integer")
               
-def searchClients():
+def searchClients(connection, cursor):
     # A while loop that validates the user input on the search menu
     searchOptionValid = False
     while searchOptionValid == False:
