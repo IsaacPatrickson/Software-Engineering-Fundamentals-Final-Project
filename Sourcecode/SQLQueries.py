@@ -18,7 +18,7 @@ def selectAttributesWithPandas(pd, connection, selector, table, column, value):
     return results
 
 # Reusable SQL command that gets all the column names in a table
-def getColumnNames(cursor):
+def getClientColumnNames(cursor):
     cursor.execute("""SELECT clientID, clientName, contractStatus, contractStartDate,
                 contractEndDate, projectWork, hqLongitude, hqLatitude, estimatedTotalRevenue 
                 FROM clients""")

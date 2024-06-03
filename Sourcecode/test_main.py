@@ -35,18 +35,29 @@ def testCompareDatatypes(dbConnection):
     stringTest = "HelloWorld"
     integerTest = 1
     floatTest = 1.1342234
-    characterLimitTest = "dfhbnjsevbag345579vbvbu@#~@@egfyuae~]!u879ovberbcvuhegyuivhbusyfs"
-    # assert compareDatatypes(cursor, stringTest, "clients", "hqLatitude") == False
-    # assert compareDatatypes(cursor, integerTest, "clients", "hqLatitude") == False
-    # assert compareDatatypes(cursor, floatTest, "clients", "hqLatitude") == True
-    # assert compareDatatypes(cursor, characterLimitTest, "clients", "hqLatitude") == False
+    assert compareDatatypes(cursor, stringTest, "clients", "hqLatitude") == False
+    assert compareDatatypes(cursor, integerTest, "clients", "hqLatitude") == False
+    assert compareDatatypes(cursor, floatTest, "clients", "hqLatitude") == True
     
-def testDetectAndConvertInput(dbConnection):
-    conn, cursor = dbConnection
+def testDetectAndConvertInput():
     stringTest = "HelloWorld"
     integerTest = 1
     floatTest = 1.1342234
-    characterLimitTest = "dfhbnjsevbag345579vbvbu@#~@@egfyuae~]!u879ovberbcvuhegyuivhbusyfs"
     assert detectAndConvertInput(stringTest) == "HelloWorld"
     assert detectAndConvertInput(integerTest) == 1
     assert detectAndConvertInput(floatTest) == 1.1342234
+    
+def testGetMethodNamesInOrder():
+    userMethods = ['setExistingUserName', 'setExistingPermissionLevel', 'setLoginStatus']
+    clientMethods = ['setClientName', 'setContractStatus', 'setContractStartDate', 
+                     'setContractEndDate', 'setProjectWork', 'setHqLongitude', 
+                     'setHqLatitude', 'setEstimatedTotalRevenue']
+    assert getMethodNamesInOrder(User) == userMethods
+    assert getMethodNamesInOrder(Client) == clientMethods
+    
+def testAttributeNameMatchClientColumnName(dbConnection):
+    conn, cursor = dbConnection
+    attributeNameInTable = "clientName"
+    attributeNameNotInTable = "Hello World"
+    assert attributeNameMatchClientColumnName(cursor, attributeNameInTable) == True
+    assert attributeNameMatchClientColumnName(cursor, attributeNameNotInTable) == False

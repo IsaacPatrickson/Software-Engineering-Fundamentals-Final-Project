@@ -257,7 +257,7 @@ def addClient(cursor):
         # Gathering all the column names excluding clientID
         # ClientID is incremented automatically
         # The user does not need to input a clientID
-        columnNames = getColumnNames(cursor)
+        columnNames = getClientColumnNames(cursor)
         for columnName in columnNames:
             if columnName == "clientID":
                 columnNames.remove(columnName)
@@ -450,14 +450,13 @@ def getMethodNamesInOrder(className):
 
 # Checks if an input attribute name (aka field name) matches a colum in a table
 def attributeNameMatchClientColumnName(cursor, attributeName):
-    columnNames = getColumnNames(cursor)
+    columnNames = getClientColumnNames(cursor)
     for columnName in columnNames:
         if attributeName == columnName:
             return True
         else:
             pass
     return False  
-    
-    
+
 if __name__ == "__main__":
     main()
