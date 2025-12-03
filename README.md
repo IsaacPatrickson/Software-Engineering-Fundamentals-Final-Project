@@ -1,45 +1,225 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+# ⭐ **Client Information Management System (Python + SQLite)**
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+## 📌 Overview
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+This project is a **console-based Client Information Management System** developed as part of my *Software Engineering Fundamentals* module.
+It demonstrates key software engineering practices, including:
 
----
+* Object-oriented design
+* Relational database modelling
+* CRUD operations
+* Data validation and error handling
+* Use of UML diagrams
+* Automated unit testing using `pytest`
+* Agile-influenced development workflow
+* Source control (Bitbucket + Git)
 
-## Edit a file
+The system allows Mediaworks employees to **log in**, view, search, update, add and delete client data stored in a local SQLite database.
+Access is permission-based, ensuring only authorised users can perform admin functionality.
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
-
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
-
----
-
-## Create a file
-
-Next, you’ll add a new file to this repository.
-
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
-
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
+Full project documentation is included in the repository:
+📄 *“Final Assessment Write Up”* 
 
 ---
 
-## Clone a repository
+## 🚀 Features
 
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
+### 👤 **User Login & Role Permissions**
 
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
+* Username-based authentication
+* Two roles:
 
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+  * **Employee** – read-only access
+  * **Admin** – full CRUD access
+* User permissions stored in `users` table
+* Hard-coded starter records auto-added if database is empty
+
+---
+
+### 🗂 **Client Record Management (CRUD)**
+
+Each client has:
+
+* Client ID (primary key)
+* Client name
+* Contract status
+* Contract start & end dates
+* Whether project-based work is included
+* HQ longitude & latitude
+* Estimated total revenue
+
+Admins can:
+
+* **Add** new client records
+* **Amend** existing fields (datatype-validated)
+* **Delete** client records (with confirmation)
+* **Search** by any column
+
+Employees can:
+
+* **Search** only
+
+All input is validated for datatype, length, and schema consistency.
+
+---
+
+### 🔎 **Search System**
+
+* Search by any attribute
+* Returns zero, one, or many matching records
+* Results displayed using `pandas` for improved readability
+
+---
+
+### 🧪 **Testing**
+
+Includes a full test suite using **pytest**, covering:
+
+* Datatype comparison
+* Input conversion
+* Column validation
+* Database queries
+* User and Client class behaviour
+* Table lookups and permission logic
+
+Testing uses **in-memory SQLite databases** for speed and isolation.
+
+See *Appendix 1 – Test Scripts* in the write-up.
+
+
+---
+
+### 🧱 **Architecture**
+
+#### Object-Oriented Design
+
+Two primary classes:
+
+* `User` – stores username, permission level, login status
+* `Client` – stores all client attributes with setter/getter methods
+
+#### Database
+
+SQLite database containing:
+
+* `users`
+* `clients`
+
+Designed for simplicity, portability, and zero-configuration deployment.
+
+#### UML diagrams (in write-up):
+
+* Use Case
+* Activity diagram
+* Class diagram
+* Program structure chart
+
+These ensured requirements clarity and prevented scope creep.
+
+
+---
+
+## 📦 Installation & Setup
+
+### 1️⃣ **Clone the Repository**
+
+```bash
+git clone https://github.com/<your-username>/<repo-name>.git
+cd <repo-name>
+```
+
+### 2️⃣ **Install Dependencies**
+
+```bash
+pip install pandas pytest
+```
+
+SQLite is included by default with Python.
+
+---
+
+## ▶️ Running the Application
+
+Run the main program:
+
+```bash
+python main.py
+```
+
+On first launch, the system will automatically:
+
+* Create the SQLite database
+* Create the `users` and `clients` tables
+* Insert default seed data if empty
+
+---
+
+## 🎮 How to Use
+
+### 🔐 Login Menu
+
+```
+1. Login
+0. Quit
+```
+
+After entering a valid username stored in the database:
+
+### 👨‍💼 Admin Menu (permission ≥5)
+
+```
+1. Amend client information
+2. Add a client
+3. Delete a client
+4. Search for clients
+0. Log out
+```
+
+### 👨‍💻 Employee Menu (permission <5)
+
+```
+1. Search for clients
+0. Log out
+```
+
+All operations give clear feedback and validation prompts.
+
+---
+
+## 🔮 Future Improvements
+
+If developed further, the application could include:
+
+* Password-based login with secure hashing
+* GUI interface (Tkinter or PyQt)
+* Migrating to a web app (Flask or Django)
+* Role/permission management UI
+* Audit logs
+* Input sanitisation and stricter validation
+* Database upgrades to MySQL or PostgreSQL
+
+---
+
+## 🧠 Lessons Learned
+
+Key insights from development:
+
+* UML diagrams helped avoid scope creep
+* Automated tests are far more efficient than manual testing
+* SQLite is ideal for small systems with zero configuration
+* Following Agile fully requires better task breakdown
+* TDD would have caught issues earlier
+
+Detailed reflection in *Task 4 – Review and Reflection*.
+
+
+---
+
+## 👤 Author
+
+**Isaac Patrickson**
+University of Roehampton – DTS Degree Apprentice
+Software Engineering Fundamentals Project
+
+GitHub: *github.com/IsaacPatrickson*
+Email: *[isaacspatrickson@gmail.com](mailto:isaacspatrickson@gmail.com)*
