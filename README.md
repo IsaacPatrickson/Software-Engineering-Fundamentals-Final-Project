@@ -1,4 +1,4 @@
-# ⭐ **Client Information Management System (Python + SQLite)**
+#  **Client Information Management System (Python + SQLite)**
 
 ## 📌 Overview
 
